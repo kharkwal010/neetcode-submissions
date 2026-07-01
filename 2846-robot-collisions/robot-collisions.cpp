@@ -12,7 +12,7 @@ public:
         stack<vector<int>> st;
         for(int i=0; i<positions.size(); i++){
             if(st.empty() || st.top()[2]==0 || terms[i][2]==1){
-                st.push({terms[i]});
+                st.push(terms[i]);
                 continue;
             }
             int heal = terms[i][1];
