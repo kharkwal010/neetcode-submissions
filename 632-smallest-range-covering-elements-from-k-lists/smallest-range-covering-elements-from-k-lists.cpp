@@ -2,7 +2,7 @@ class Solution {
 public:
     vector<int> smallestRange(vector<vector<int>>& nums) {
         priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> minheap;
-        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> mindel;
+        // priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> mindel;
         int maxi = INT_MIN;
         for(int i=0; i<nums.size(); i++){
             minheap.push({nums[i][0], i, 0});
@@ -16,13 +16,8 @@ public:
             int r = top[1];
             int c = top[2];
             if(c==nums[r].size()-1) break;
-            mindel.push({nums[r][c], r, c});
             minheap.push({nums[r][c+1], r, c+1});
             maxi = max(maxi, nums[r][c+1]);
-            while(!mindel.empty() && mindel.top()==minheap.top()){
-                minheap.pop();
-                mindel.pop();
-            }
             if(maxi-minheap.top()[0]<interval){
                 interval = maxi - minheap.top()[0];
                 ans = {minheap.top()[0], maxi};
