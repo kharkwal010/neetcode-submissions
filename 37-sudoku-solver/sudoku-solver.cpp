@@ -8,8 +8,8 @@ public:
         for(int i=0; i<9; i++){
             for(int j=0; j<9; j++){
                 if(board[i][j]=='.'){
+                    int b = (j/3) + (i/3) * 3; 
                     for(int k=1; k<10; k++){
-                        int b = (j/3) + (i/3) * 3; 
                         if(row[i][k] || col[j][k] || box[b][k]) continue;
                         board[i][j] = '0' + k;
                         row[i][k] = true;
