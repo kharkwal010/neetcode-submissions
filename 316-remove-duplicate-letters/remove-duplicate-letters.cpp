@@ -1,38 +1,35 @@
 class Solution {
 public:
     string removeDuplicateLetters(string s) {
-        vector<bool> contain(26, false);
-        vector<bool> visited(26, false);
-        vector<int> count(26, 0);
-        string ans;
-        for(char c: s) count[c-'a']++;
-        deque<char> dq;
-        for(char c: s){
-            if(visited[c-'a']) continue;
-            count[c-'a']--;
-            if(!contain[c-'a']){
-                while(!dq.empty() && dq.back()>c){
-                    char ch = dq.back();
-                    contain[ch-'a'] = false;
-                    dq.pop_back();
-                }
-                contain[c-'a'] = true;
-                dq.push_back(c);
+       stack<char> st;
+       vector<int> freq(26, 0);
+       for(char c: s){
+            freq[c-'a']++;
+       }
+       vector<bool> inside(26, false);
+       for(char c: s){
+            freq[c-'a']--;
+            if(inside[c-'a']) continue;
+            if(st.empty() || st.top()<c){
+                st.push(c);
+                inside[c-'a'] = true;
             }
-            if(count[c-'a']==0){
-                while(!dq.empty() && dq.front()<=c){
-                    char ch = dq.front();
-                    visited[ch-'a'] = true;
-                    ans.push_back(ch);
-                    dq.pop_front();
+            else{
+                while(!st.empty() && st.top()>c){
+                    if(freq[st.top()-'a']==0) break;
+                    inside[st.top()-'a'] = false;
+                    st.pop();
                 }
+                st.push(c);
+                inside[c-'a'] = true;                
             }
-            // cout<<dq.size()<<endl;
-        }
-        while(!dq.empty()){
-            ans.push_back(dq.front());
-            dq.pop_front();
-        }
-        return ans;
+       }
+       string ans;
+       while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+       }
+       reverse(ans.begin(), ans.end());
+       return ans;
     }
 };
