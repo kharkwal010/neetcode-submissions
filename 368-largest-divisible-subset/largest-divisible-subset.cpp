@@ -1,30 +1,28 @@
 class Solution {
 public:
-    unordered_map<int, vector<int>> memo;
-    vector<int> dp(vector<int>& nums, int i){
-        if(i==nums.size()) return {};
-        if(memo.count(i)) return memo[i];
-        vector<int> res;
-        res.push_back(nums[i]);
-        for(int j=i+1; j<nums.size(); j++){
-            vector<int> temp = {nums[i]};
-            if(nums[j]%nums[i]==0){
-                vector<int> next = dp(nums, j);
-                temp.insert(temp.end(), next.begin(), next.end());
-                if(temp.size()>res.size()) res = temp;
-            }
-                       
-        }
-        return memo[i] = res;
-    }
     vector<int> largestDivisibleSubset(vector<int>& nums) {
         sort(nums.begin(), nums.end());
+        int curr = 1;
+        vector<int> dp(nums.size(), 1);
+        for(int i=nums.size()-2; i>=0; i--){
+            for(int j=i+1; j<nums.size(); j++){
+                if(nums[j]%nums[i]==0){
+                    dp[i] = max(dp[i], dp[j]+1);
+                }
+            }
+            curr = max(curr, dp[i]);
+        }
         vector<int> ans;
-        vector<int> temp;
+        int prev = 1;
         for(int i=0; i<nums.size(); i++){
-            temp = dp(nums, i);
-            if(temp.size()>ans.size()) ans = temp;
+            if(dp[i]==curr && nums[i]%prev==0){
+                ans.push_back(nums[i]);
+                prev = nums[i];
+                curr--;
+                if(curr==0) break;
+            }
         }
         return ans;
+
     }
 };
