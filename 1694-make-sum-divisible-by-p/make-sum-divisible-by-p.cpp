@@ -1,23 +1,23 @@
 class Solution {
 public:
     int minSubarray(vector<int>& nums, int p) {
-       int ans = INT_MAX;
-       unordered_map<int, int> index;
-       long long sum = 0;
-    //    vector<int> prefix(nums.size()+1, 0);
-       for(int i=0; i<nums.size(); i++) sum += nums[i];
-       int rem = sum%p;
-       if(rem==0) return 0;
-       index[0] = -1;
-       long long add = 0;
-       for(int i=0; i<nums.size(); i++){
-            add += nums[i];
-            int r = add % p;
-            int comp = r - rem;
-            if(comp<0) comp = comp + p;
-            if(index.count(comp)) ans = min(ans, i - index[comp]);
-            index[r] = i;
-       }
-       return (ans==INT_MAX || ans == nums.size()) ? -1 : ans;
+        long long prefix = 0;
+        for(int n: nums) prefix += n;
+        int rem = prefix%p;
+        if(rem==0) return 0;
+
+        unordered_map<int, int> index;
+        index[0] = -1;
+        prefix = 0;
+        int ans = INT_MAX;
+        for(int i=0; i<nums.size(); i++){
+            prefix += nums[i];
+            int term = prefix%p;
+            int search = (term + p - rem)%p;
+            if(index.count(search)) ans = min(ans, i-index[search]);
+            index[term] = i;
+        }
+        if(ans==nums.size()) return -1;
+        return ans;
     }
 };
