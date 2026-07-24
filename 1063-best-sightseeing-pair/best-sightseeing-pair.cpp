@@ -4,10 +4,10 @@ public:
         int maxi = values[0];
         int ans = 0;
         for(int i=1; i<values.size(); i++){
-            maxi = max(maxi-1, values[i-1]);
-            ans = max(ans, values[i] + maxi - 1);
-            cout<<maxi<<" ";
+            ans = max(ans, maxi + values[i] - 1);
+            maxi = max(maxi-1, values[i]);
         }
         return ans;
+
     }
 };
