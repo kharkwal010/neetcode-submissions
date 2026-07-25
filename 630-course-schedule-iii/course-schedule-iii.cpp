@@ -2,28 +2,25 @@ class Solution {
 public:    
     int scheduleCourse(vector<vector<int>>& courses) {
         priority_queue<int> maxheap;
-        int sum = 0;
-        int ans = 0;
-        sort(courses.begin(), courses.end(), [](const auto& a, const auto& b){
-            return a[1]<b[1];
+        sort(courses.begin(), courses.end(),[](auto& x, auto& y){
+            return x[1]<y[1];
         });
-        int i = 0;
-        while(i<courses.size()){
-            int day = courses[i][1];
-            while(i<courses.size() && courses[i][1]==day){
-                sum += courses[i][0];
+        int time = 0;
+        for(int i=0; i<courses.size(); i++){
+            if(courses[i][1]<courses[i][0]) continue;
+            if(time+courses[i][0]<=courses[i][1]){
+                time += courses[i][0];
                 maxheap.push(courses[i][0]);
-                i++;
             }
-            while(maxheap.size()>ans){
-                if(sum<=day){
-                    ans = maxheap.size();
-                    break;
+            else{
+                if(maxheap.top()>courses[i][0]){
+                    time-=maxheap.top();
+                    maxheap.pop();
+                    time+=courses[i][0];
+                    maxheap.push(courses[i][0]);
                 }
-                sum -= maxheap.top();
-                maxheap.pop();
             }
         }
-        return ans;
+        return maxheap.size();
     }
 };
