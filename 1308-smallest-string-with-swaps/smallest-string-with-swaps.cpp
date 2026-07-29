@@ -32,7 +32,7 @@ public:
     string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
         int n = s.size();
         dsu terms(n);
-        for(auto ele: pairs){
+        for(auto& ele: pairs){
             terms.merge(ele[0], ele[1]);
         }
         unordered_map<int, vector<int>> groups;
@@ -40,17 +40,17 @@ public:
             int p = terms.find(i);
             groups[p].push_back(i);
         }
-        for(auto ele: groups){
+        for(auto& ele: groups){
             vector<char> cluster;
             vector<int> index;
-            for(int t: ele.second){
+            for(int& t: ele.second){
                 index.push_back(t);
                 cluster.push_back(s[t]);
             }
             sort(index.begin(), index.end());
             sort(cluster.begin(), cluster.end());
             int j=0;
-            for(int i: index){
+            for(int& i: index){
                 s[i] = cluster[j];
                 j++;
             }
