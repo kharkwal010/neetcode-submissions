@@ -1,26 +1,28 @@
 class Solution {
 public:
     unordered_map<string, vector<int>> memo;
-    vector<int> ways(string expression){
-        if(memo.count(expression)) return memo[expression];
+    vector<int> ways(string s){
+        if(memo.count(s)) return memo[s];
         vector<int> ans;
-        for(int i=0; i<expression.size(); i++){
-            if(expression[i]=='+' || expression[i]=='-' || expression[i]=='*'){
-                string left = expression.substr(0, i);
-                string right = expression.substr(i+1);
-                vector<int> lele = ways(left);
-                vector<int> rele = ways(right);
-                for(int l: lele){
-                    for(int r: rele){
-                        if(expression[i]=='+') ans.push_back(l+r);
-                        else if(expression[i]=='-') ans.push_back(l-r);
-                        else ans.push_back(l*r);
+        bool present = false;
+        for(int i=0; i<s.size(); i++){
+            if(s[i]=='-' || s[i]=='+' || s[i]=='*'){
+                present = true;
+                string left = s.substr(0, i);
+                string right = s.substr(i+1);
+                vector<int> l = ways(left);
+                vector<int> r = ways(right);
+                for(int ele1: l){
+                    for(int ele2: r){
+                        if(s[i]=='+') ans.push_back(ele1 + ele2);
+                        else if(s[i]=='-') ans.push_back(ele1 - ele2);
+                        else ans.push_back(ele1 * ele2);
                     }
                 }
             }
         }
-        if(ans.empty()) ans.push_back(stoi(expression));
-        return memo[expression] = ans;
+        if(!present) ans.push_back(stoi(s));
+        return memo[s] = ans;
     }
     vector<int> diffWaysToCompute(string expression) {
         return ways(expression);
