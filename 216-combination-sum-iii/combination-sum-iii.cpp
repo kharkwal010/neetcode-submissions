@@ -1,6 +1,6 @@
 class Solution {
 public:
-    void comb(int k, int n, vector<vector<int>>& ans, vector<int> terms, int j){
+    void comb(int k, int n, vector<vector<int>>& ans, vector<int>& terms, int j){
         if(n<0) return;
         if(k==0){
             if(n==0) ans.push_back(terms);
@@ -15,7 +15,8 @@ public:
     }
     vector<vector<int>> combinationSum3(int k, int n) {
         vector<vector<int>> ans;
-        comb(k, n, ans, {}, 1);
+        vector<int> terms;
+        comb(k, n, ans, terms, 1);
         return ans;
     }
 };
