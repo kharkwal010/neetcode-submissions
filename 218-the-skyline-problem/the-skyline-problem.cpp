@@ -11,7 +11,6 @@ public:
             }
             else{
                 x = maxheap.top().second;
-                maxheap.pop();
             }
             while(i<buildings.size() && buildings[i][0]<=x){
                 maxheap.push({buildings[i][2], buildings[i][1]});
