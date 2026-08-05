@@ -4,13 +4,16 @@ public:
         int mini = INT_MAX;
         stack<pair<int, int>> st;
         for(int i=0; i<nums.size(); i++){
-            while(!st.empty() && st.top().first<=nums[i]) st.pop();
-            mini = min(mini, nums[i]);
-            if(!st.empty()){
-                if(st.top().second<nums[i]) return true;
+            while(!st.empty() && st.top().first<=nums[i]){
+                st.pop();                
             }
+            if(!st.empty()){
+                auto top = st.top();
+                if(top.first>nums[i] && top.second<nums[i]) return true;
+            }
+            mini = min(mini, nums[i]);
             st.push({nums[i], mini});
-        }  
-        return false;     
+        }
+        return false;
     }
 };
