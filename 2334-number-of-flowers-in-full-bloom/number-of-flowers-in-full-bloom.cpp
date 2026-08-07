@@ -24,14 +24,14 @@ public:
         vector<int> ans;
         unordered_map<int, int> memo;
         for(int ele: people){
-            if(memo.count(ele)){
-                ans.push_back(memo[ele]);
-                continue;
-            }
+            // if(memo.count(ele)){
+            //     ans.push_back(memo[ele]);
+            //     continue;
+            // }
             int bloom = find(start, ele);
             int dull = find(end, ele);
             ans.push_back(bloom-dull);
-            memo[ele] = ans.back();
+            // memo[ele] = ans.back();
         }
         return ans;
     }
