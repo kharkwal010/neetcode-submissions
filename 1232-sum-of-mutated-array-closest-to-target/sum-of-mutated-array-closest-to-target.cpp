@@ -11,12 +11,12 @@ public:
     int findBestValue(vector<int>& arr, int target) {
         int r = *max_element(arr.begin(), arr.end());
         int l = 0;
-        while(l<=r){
+        while(l<r){
             int m = (l+r)/2;            
             int one = sumdiff(arr, target, m);
             int next = sumdiff(arr, target, m+1);
             if(one<=next){
-                r = m-1;
+                r = m;
             }
             else l = m+1;            
         }
