@@ -8,10 +8,8 @@ public:
             times[ele[0]] += 1;
             if(ele[1]+1<n) times[ele[1]+1] -=1;
         }
-        int prev = 0;
-        for(int i=0; i<n; i++){
-            times[i]+=prev;
-            prev = times[i];
+        for(int i=1; i<n; i++){
+            times[i]+=times[i-1];
         }
         sort(times.rbegin(), times.rend());
         sort(nums.rbegin(), nums.rend());
