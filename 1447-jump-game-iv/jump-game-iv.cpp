@@ -1,40 +1,40 @@
 class Solution {
 public:
     int minJumps(vector<int>& arr) {
-        int n = arr.size();
-        vector<int> dp(n, INT_MAX);
-        dp[0] = 0;
-        queue<int> q;
-        q.push(0);
+        vector<bool> visited(arr.size(), false);
         unordered_map<int, vector<int>> index;
-        for(int i=0; i<n; i++){
+        for(int i=0; i<arr.size(); i++){
             index[arr[i]].push_back(i);
         }
-        int count = 1;
+        int count = 0;
+        queue<int> q;
+        q.push(0);
         while(!q.empty()){
-            int size = q.size();
-            for(int j=0; j<size; j++){
-                int i = q.front();
+            int sz = q.size();
+            for(int i=0; i<sz; i++){
+                int curr = q.front();
+                if(curr==arr.size()-1) return count;
                 q.pop();
-                int curr = arr[i];
-                for(int& ind : index[curr]){
-                    if(dp[ind]!=INT_MAX) continue;
-                    dp[ind] = count; 
-                    q.push(ind);                   
+                if(curr-1>=0 && !visited[curr-1]){
+                    // visited[curr-1] = true;
+                    q.push(curr-1);
                 }
-                index.erase(curr);
-                if(i+1<n && dp[i+1]==INT_MAX){
-                    dp[i+1] = count;
-                    q.push(i+1);
+                if(curr+1<arr.size() && !visited[curr+1]){
+                    // visited[curr+1] = true;
+                    q.push(curr+1);
                 }
-                if(i-1>=0 && dp[i-1]==INT_MAX){
-                    dp[i-1] = count;
-                    q.push(i-1);
+                if(!visited[curr]){
+                    for(int e: index[arr[curr]]){
+                        visited[e] = true;
+                        // cout<<e<<" ";
+                        q.push(e);
+                    }
                 }
             }
+            // cout<<endl;
             count++;
         }
-        return dp[n-1];
-        
+        return -1;
+
     }
 };
