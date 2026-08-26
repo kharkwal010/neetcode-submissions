@@ -1,0 +1,6 @@
+# Write your MySQL query statement below
+WITH TAB AS (
+    SELECT NUM FROM MYNUMBERS
+    GROUP BY NUM HAVING COUNT(NUM) = 1
+)
+SELECT MAX(NUM) AS NUM FROM TAB
