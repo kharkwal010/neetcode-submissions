@@ -3,12 +3,14 @@ public:
     int minFlips(string s) {
         int n = s.size();
         int one = 0;
-        for(int i=0; i<n; i++){
-            if(s[i]=='1') one++;
-        }
-        int res1 = n - one;
-        int res2 = max(0, one - 1);
-        int res3 = max(0, one - (s[0]-'0') - (s[n-1]-'0'));
-        return min({res1, res2, res3});
+        for(char c: s) if(c=='1') one++;
+        bool two = false;
+        if(s[0]=='1' && s[n-1]=='1') two = true;
+        if(one==0 || one==n) return 0;
+        int ans1 = n - one;
+        int extra = (two) ? 2 : 1;
+        int ans2 = one - extra;
+        return min(ans1, ans2);
+
     }
 };
