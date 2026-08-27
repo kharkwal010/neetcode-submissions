@@ -1,28 +1,26 @@
 class Solution {
 public:
-    unordered_set<string> nums;
-    unordered_map<int, bool> memo;
-    bool dfs(string word, int j){
+    unordered_set<string> terms;
+    vector<int> memo;
+    bool dfs(string& word, int j){
         if(j==word.size()) return true;
-        if(memo.count(j)) return memo[j];
-        
+        bool ans = false;
+        if(memo[j]!=-1) return memo[j];
+        string curr = "";
         for(int i=j; i<word.size(); i++){
-            string pre = word.substr(j, i-j+1);
-            if(nums.count(pre) && dfs(word, i+1)){
-                 return memo[j] = true;
-            }
+            curr.push_back(word[i]);
+            if(terms.count(curr)) ans = ans || dfs(word, i+1);
         }
-        return memo[j] = false;
-        
+        return memo[j] = ans;
     }
     vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        for(string& s: words) terms.insert(s);
         vector<string> ans;
-        for(string& s: words) nums.insert(s);
-        for(string w: words){
-            memo.clear();
-            nums.erase(w);
-            if(dfs(w,0)) ans.push_back(w);
-            nums.insert(w);
+        for(string s: words){
+            terms.erase(s);
+            memo.assign(s.size(), -1);
+            if(dfs(s, 0)) ans.push_back(s);
+            terms.insert(s);
         }
         return ans;
     }
