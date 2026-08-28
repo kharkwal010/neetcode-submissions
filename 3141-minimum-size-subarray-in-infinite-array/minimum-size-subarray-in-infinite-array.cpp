@@ -1,31 +1,25 @@
 class Solution {
 public:
     int minSizeSubarray(vector<int>& nums, int target) {
-        int n = nums.size();
-        vector<long long> prefix(2*n+1,0);
-        for(int i=0; i<2*n; i++){
-            prefix[i+1] = prefix[i] + nums[i%n];
-        }
-        int full = target/prefix[n];
-        target = target % prefix[n];
-        if(target==0) return full*n;
-        unordered_map<long long, int> index;
+        long long sum = 0;
+        for(int n: nums) sum += n;
+        int extra = target/sum;
+        target = target%sum;
+        vector<int> terms = nums;
+        for(int n: nums) terms.push_back(n);
+        int l = 0;
+        long long curr = 0;
         int ans = INT_MAX;
-        if(prefix[n]>=target){
-            // cout<<"hello"<<endl;
-            for(int i=0; i<prefix.size(); i++){
-                long long tar = prefix[i] - target;
-                if(index.count(tar)){
-                    ans = min(ans, i - index[tar]);
-                }
-                index[prefix[i]] = i;
+        for(int r=0; r<terms.size(); r++){
+            curr = curr + terms[r];
+            while(curr>target){
+                curr -= terms[l];
+                l++;
             }
+            if(curr==target) ans = min(ans, r-l+1);
         }
         if(ans==INT_MAX) return -1;
-        return full*n + ans;
-        
+        return extra * nums.size() + ans;
 
-        
-        
     }
 };
