@@ -1,23 +1,21 @@
 class Solution {
 public:
-    int dfs(int node, int parent, vector<vector<int>>& adj, vector<bool>& hasApple){
-        int ans = 0;
-        for(int nei: adj[node]){
-            int child =0;
+    vector<vector<int>> adj;
+    int apple(vector<bool>& having, int curr, int parent){
+        int count = 0;
+        for(int nei: adj[curr]){
             if(nei==parent) continue;
-            child = dfs(nei, node, adj, hasApple);
-            if(hasApple[nei] || child>0) ans +=  2 + child;
+            int next_apple = apple(having, nei, curr);
+            if(next_apple>0 || having[nei]) count += 2 + next_apple;
         }
-        
-        return ans;
+        return count;
     }
     int minTime(int n, vector<vector<int>>& edges, vector<bool>& hasApple) {
-        vector<vector<int>> adj(n);
-        for(auto& ed: edges){
-            adj[ed[0]].push_back(ed[1]);
-            adj[ed[1]].push_back(ed[0]);
-        }
-        return dfs(0, -1, adj, hasApple);
-        
+       adj.resize(n);
+       for(auto& ed: edges){
+        adj[ed[0]].push_back(ed[1]);
+        adj[ed[1]].push_back(ed[0]);
+       }
+        return apple(hasApple, 0, -1);
     }
 };
