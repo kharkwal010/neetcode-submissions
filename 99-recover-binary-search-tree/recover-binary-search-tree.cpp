@@ -13,27 +13,30 @@
 
 class Solution {
 public:
-    TreeNode* first = nullptr;
-    TreeNode* second = nullptr;
-    TreeNode* prev = nullptr;
-    void traverse(TreeNode* root){
-        if(!root) return;
-        traverse(root->left);
-        // do the task;
-        if(prev && prev->val>root->val){
-            if(!first){
-                first = prev;
-            }
-            second = root;          
+    TreeNode* small;
+    TreeNode* big;
 
+    void traverse(TreeNode* root, TreeNode*& prev){
+        if(!root) return;
+        traverse(root->left, prev);
+        if(prev!=nullptr){
+            // cout<<prev->val<<" "<<root->val<<endl;
+            if(root->val<prev->val){
+                if(small==nullptr) small = prev;
+                big = root;
+                // cout<<"small:"<<small->val<<" "<<"big:"<<big->val<<endl;
+            }
         }
         prev = root;
-        traverse(root->right);
-
+        traverse(root->right, prev);
     }
     void recoverTree(TreeNode* root) {        
-        traverse(root);
-        swap(first->val, second->val);
+        small = nullptr;
+        big = nullptr;
+        TreeNode* prev = nullptr;
+        traverse(root, prev);
+        // cout<<small->val<<" "<<big->val<<endl;
+        swap(small->val, big->val);
         return;
     }
 };
