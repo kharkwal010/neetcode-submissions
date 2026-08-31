@@ -1,45 +1,52 @@
 class Solution {
 public:
-    bool bfs(vector<vector<vector<int>>>& adj, int& source, int& target, int k, int& thresh){
-        deque<int> dq;
-        int n = adj.size();
-        vector<int> dist(n,INT_MAX);
-        dist[source] = 0;
-        dq.push_front(source);
-        while(!dq.empty()){
-            auto top = dq.front();
-            dq.pop_front();
-            int nde = top;
-            for(auto nei: adj[nde]){
-                int c = (nei[0]>thresh) ? 1 : 0;
-                int nnode = nei[1];
-                if(dist[nde]+c>=dist[nnode]) continue;
-                dist[nnode] = dist[nde] + c;
-                if(c==0) dq.push_front(nnode);
-                else dq.push_back(nnode);
+    vector<vector<vector<int>>> adj;
+    bool bfs(int& n, int& src, int& tar, int k, int thresh){
+        vector<vector<bool>> visited(n, vector<bool>(k+1, false));
+        queue<pair<int, int>> q;
+        q.push({src, k});
+        visited[src][k] = true;
+        while(!q.empty()){
+            int sz = q.size();
+            for(int j=0; j<sz; j++){
+                auto top = q.front();
+                int curr = top.first;
+                int chance = top.second;
+                q.pop();
+                for(auto nei: adj[curr]){
+                    bool heavy = (nei[0]>thresh);
+                    if((heavy && chance==0) || visited[nei[1]][chance-heavy]) continue;
+                    if(chance<k && visited[nei[1]][chance+1]) continue;
+                    visited[nei[1]][chance-heavy] = true;
+                    if(nei[1]==tar) return true;
+                    q.push({nei[1], chance-heavy});
+                }
             }
         }
-        return dist[target]<=k;
-        
+        return false;
     }
     int minimumThreshold(int n, vector<vector<int>>& edges, int source, int target, int k) {
-        vector<vector<vector<int>>> adj(n);
-        int maxi = 0;
-        for(auto ed: edges){
+        adj.resize(n);
+        int l = 0;
+        int r = 0;
+        if(source==target) return 0;
+        for(auto& ed: edges){
             adj[ed[0]].push_back({ed[2], ed[1]});
             adj[ed[1]].push_back({ed[2], ed[0]});
-            maxi = max(maxi, ed[2]);
+            r = max(r, ed[2]);
         }
-        if(bfs(adj, source, target, k, maxi)==false) return -1;
-        int l = 0;
-        int r = maxi;
+        int ans = r;
+        if(!bfs(n, source, target, k, ans)) return -1;
         while(l<=r){
-            int m = (l + (r - l) / 2);
-            bool check = bfs(adj, source, target, k, m);
-            if(check) r = m-1;
+            int m = l + (r-l) / 2;
+            if(bfs(n, source, target, k, m)){
+                ans = m;
+                r = m-1;
+            }
             else l = m+1;
         }
-        return l;
+        return ans;
+        
 
     }
 };
