@@ -1,35 +1,24 @@
 class Solution {
 public:
-    vector<vector<bool>> palindrome;
-    bool palin(string& s, int l, int r){
-        while(l<r){
-            if(s[l]!=s[r]) return false;
-            l++;
-            r--;
-        }
-        return true;
-    }
-    bool check(string& s, int i, int k){
-        if(i==s.size()) return false;
-        if(k==2) return palindrome[i][s.size()-1];
-        bool ans = false;
-        for(int j=i; j<s.size(); j++){
-            if(palindrome[i][j]){
-                ans = ans || check(s, j+1, k+1);
-            }
-        }
-        return ans;
-    }
+    vector<vector<int>> palin;
     bool checkPartitioning(string s) {
         int n = s.size();
-        palindrome.resize(n, vector<bool>(n, false));
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                palindrome[i][j] = palin(s, i, j);
+        palin.resize(n, vector<int>(n, false));
+        for(int len = 1; len<=n; len++){
+            for(int l=0; l<n-len+1; l++){
+                int r = l+len-1;
+                if(s[l]==s[r]){
+                    if(l+1>r-1 || palin[l+1][r-1]) palin[l][r] = true;
+                }
             }
         }
-        return check(s, 0, 0);
-        
-
+        for(int i=0; i<n-2; i++){
+            if(palin[0][i]){
+                for(int j=i+1; j<n-1; j++){
+                    if(palin[i+1][j] && palin[j+1][n-1]) return true;
+                }
+            }
+        }
+        return false;
     }
 };
