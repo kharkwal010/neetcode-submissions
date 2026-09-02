@@ -1,27 +1,42 @@
 class Solution {
 public:
-    bool check(string& a, string& b, bool swapping, int i, int j){        
-        while(i<j){
-            if(a[i]==b[j]){
-                i++;
-                j--;
-            }
-            else{
-                if(swapping){
-                    bool swapping = false;
-                    return check(a, a, swapping, i, j) || check(b, b, swapping, i, j);                 
-                }
-                return false;
-            }
+    bool palin(string& s, int l, int r){
+        while(l<r){
+            if(s[l]!=s[r]) return false;
+            l++;
+            r--;
         }
         return true;
     }
     bool checkPalindromeFormation(string a, string b) {
-        int l = 0;
-        int r = a.size()-1;
-        if(check(a, b, true, l, r ) || check(b, a, true, l, r)) return true;
-        return false;
-        
+      int l=0;
+      int r = b.size()-1;
+      bool ans = true;
+      while(l<r){
+            if(a[l]!=b[r]){
+                ans = palin(a, l, r) || palin(b, l, r);
+                if(ans) return true;
+                break;
+            }
+            l++;
+            r--;
+      }
+      if(ans) return true;
+      l = 0;
+      r = b.size()-1;
+      ans = true;
+      while(l<r){
+            if(b[l]!=a[r]){
+                ans = palin(a, l, r) || palin(b, l, r);
+                if(ans) return true;
+                break;
+            }
+            l++;
+            r--;
+      }
+      if(ans) return true;
+      return false;
+
         
     }
 };
