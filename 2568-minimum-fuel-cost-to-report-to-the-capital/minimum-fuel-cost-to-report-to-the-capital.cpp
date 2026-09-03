@@ -1,27 +1,25 @@
 class Solution {
 public:
-    long long fuel;
-    int car(vector<vector<int>>& adj, int i, int parent, int& seats){
-        int cars = 1;
-        for(int ele: adj[i]){
-            if(ele==parent) continue;
-            cars += car(adj, ele, i, seats);
+    long long total;
+    long long cost(vector<vector<int>>& adj, int seats, int curr, int parent){
+        long long men = 1;
+        for(int nei: adj[curr]){
+            if(nei==parent) continue;
+            men += cost(adj, seats, nei, curr);
         }
-        fuel += ceil((double)cars/seats);
-        return cars;
+        if(curr!=0) total += ceil((double)men/seats);
+        return men;
     }
     long long minimumFuelCost(vector<vector<int>>& roads, int seats) {
+        total = 0;
         int n = roads.size()+1;
-        fuel = 0;
         vector<vector<int>> adj(n);
-        for(auto ele: roads){
-            adj[ele[0]].push_back(ele[1]);
-            adj[ele[1]].push_back(ele[0]);
+        for(auto e: roads){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
         }
-        for(int ele: adj[0]){
-            car(adj, ele, 0, seats);
-        }
-        return fuel;
+        cost(adj, seats, 0, -1);
+        return total;
 
     }
 };
