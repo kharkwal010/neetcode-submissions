@@ -1,36 +1,31 @@
 class Solution {
 public:
     vector<vector<vector<long long>>> memo;
-    long long terms(string& s, int i, int prev, bool small, int& k){
+    // (curr, prev, tight);
+    long long dp(string& s, int i, int prev, bool tight, int& k){
         if(i==s.size()) return 1;
-        if(memo[i][prev][small]!=-1) return memo[i][prev][small];
-        int curr = s[i] - '0';
-        int start = max(0, prev - k);
-        int end = min(9, prev + k);
-        if(!small) end = min(end, s[i]-'0');
+        if(memo[i][prev][tight]!=-1) return memo[i][prev][tight];
         long long ans = 0;
-        for(int j=start; j<=end; j++){
-            bool free = small || s[i]-'0'>j;
-            ans += terms(s, i+1, j, free, k);
-        }
-        return memo[i][prev][small] = ans;
-    }
-    long long fun(long long l, int k){
-        string s1 = to_string(l);
-        int n1 = s1.size();
-        memo.assign(n1, vector<vector<long long>>(10, vector<long long>(2, -1)));
-        long long ans = 0;
-        for(int i=0; i<n1; i++){
-            int mx = (i==0) ? s1[0] - '0' : 9;
-            for(int j=1; j<=mx; j++){
-                if(i==0 && j==mx) ans += terms(s1, i+1, j, false, k);
-                else ans+=terms(s1, i+1, j, true, k);
-            }
+        int lb = (prev==10) ? 0 : max(0, prev-k);
+        int ub = (prev==10) ? 9 : min(9, prev+k);
+        if(tight) ub = min(s[i]-'0', ub);
 
+        for(int j=lb; j<=ub; j++){
+            int n_prev = (prev==10 && j==0) ? 10 : j;
+            ans += dp(s, i+1, n_prev, (tight && j==(s[i]-'0')), k);
         }
-        return ans;
+        return memo[i][prev][tight] = ans;
+    }
+    long long terms(string& s, int& k){
+        memo.assign(s.size(), vector<vector<long long>>(11, vector<long long>(2, -1)));
+        return dp(s, 0, 10, true, k);
     }
     long long goodIntegers(long long l, long long r, int k) {
-        return (fun(r, k) - fun(l-1, k));
+        string s = to_string(r);
+        long long right = terms(s, k);
+        s = to_string(l-1);
+        long long left = terms(s, k);
+        return right - left;       
+
     }
 };
