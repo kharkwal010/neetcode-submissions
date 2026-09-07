@@ -2,11 +2,11 @@ class Solution {
 public:
     int numMatchingSubseq(string s, vector<string>& words) {
         vector<queue<pair<string, int>>> buckets(26);
-        for(string w: words){
+        for(string& w: words){
             buckets[w[0]-'a'].push({w, 0});
         }
         int ans = 0;
-        for(char c: s){
+        for(char& c: s){
             int r = c-'a';
             queue<pair<string, int>> temp;
             while(!buckets[r].empty()){
