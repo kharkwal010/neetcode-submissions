@@ -1,24 +1,21 @@
 class Solution {
 public:
     vector<vector<vector<int>>> memo;
-    // pos, count of 1 seen till now, tight
-    int dp(string& s, int i, bool tight, int count){
+    int dp(string& s, int i, int count, bool tight){
         if(i==s.size()) return count;
         if(memo[i][count][tight]!=-1) return memo[i][count][tight];
         int ub = (tight) ? s[i]-'0' : 9;
-        int ans = 0;
+        int n = 0;
         for(int j=0; j<=ub; j++){
-            if(j==1) count++;
-            ans += dp(s, i+1, (tight && j==ub), count);
-            if(j==1) count--;
+            bool one = (j==1);
+            n += dp(s, i+1, count + one, tight && j==ub);
         }
-        return memo[i][count][tight] = ans;
+        return memo[i][count][tight] = n;
     }
-
     int countDigitOne(int n) {
-        string s = to_string(n);
-        int sz = s.size();
-        memo.resize(sz, vector<vector<int>>(sz+1, vector<int>(2, -1)));
-        return dp(s, 0, true, 0);
+        string term = to_string(n);
+        int y = term.size();
+        memo.resize(y, vector<vector<int>>(y, vector<int>(2, -1)));
+        return dp(term, 0, 0, true);
     }
 };
