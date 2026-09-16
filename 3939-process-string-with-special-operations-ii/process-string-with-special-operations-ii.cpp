@@ -4,14 +4,14 @@ public:
         long long len = 0;
         int n = s.size();
 
-        vector<long long> pref(n + 1, 0);
+        unordered_map<int, long long> pref;
 
         for (int i = 0; i < n; i++) {
-            pref[i] = len;
 
             char c = s[i];
 
             if (c == '*') {
+                pref[i] = len;
                 len = max(len - 1, 0LL);
             }
             else if (c == '#') {
@@ -20,8 +20,6 @@ public:
             else if (c != '%') {
                 len++;
             }
-
-            pref[i + 1] = len;
         }
 
         if (len <= k) return '.';
