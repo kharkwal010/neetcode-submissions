@@ -1,21 +1,27 @@
 class Solution {
-public:
-    unordered_map<char, int> count;
-    int backtrack(){
-        int res = 1;
-        for(auto& c: count){
-            if(c.second>0){
-                count[c.first]--;
-                res += backtrack();
-                count[c.first]++;
+public:    
+    unordered_set<string> terms;
+    void backtrack(string tiles, vector<bool>& visited, int i, string curr){
+        if(i==tiles.size()) return;
+        for(int j=0; j<tiles.size(); j++){
+            if(visited[j]) continue;
+            curr.push_back(tiles[j]);
+            if(!terms.count(curr)){
+                terms.insert(curr);
+                visited[j] = true;
+                backtrack(tiles, visited, i+1, curr);
             }
+            curr.pop_back();
+            visited[j] = false;
         }
-        return res;
+        return;
+
     }
     int numTilePossibilities(string tiles) {
-        for(char c: tiles){
-            count[c]++;
-        }
-        return backtrack()-1;
+        int n = tiles.size();
+        vector<bool> visited(n, false);
+        backtrack(tiles, visited, 0, "");
+        return terms.size();
+
     }
 };
