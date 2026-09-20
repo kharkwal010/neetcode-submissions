@@ -12,23 +12,24 @@
 class Solution {
 public:
     int widthOfBinaryTree(TreeNode* root) {
-        if(!root) return 0;
-        long long width = 1;
-        queue<pair<TreeNode*, long long>> q;
-        q.push({root, 1});     // root, val
-        while(!q.empty()){
-            int n = q.size();
-            long long st = q.front().second;
-            for(int i=0; i<n; i++){
-                auto[curr, val] = q.front();
-                q.pop();
-                width = max(width, val - st + 1);
-                val -= st;
-                // cout<<val - st + 1<<endl;
-                if(curr->left) q.push({curr->left, val*2});
-                if(curr->right) q.push({curr->right, val*2+1});
-            }
+       if(!root) return 0;
+       deque<pair<TreeNode*, long long>> dq;
+       dq.push_back({root, 1});
+       long long ans = 0;
+       while(!dq.empty()){
+        long long st = dq.front().second;
+        long long end = dq.back().second;
+        ans = max(ans, end - st + 1);
+        int sz = dq.size();
+        for(int i=0; i<sz; i++){
+            TreeNode* curr = dq.front().first;
+            long long j = dq.front().second - st;
+            dq.pop_front();
+            if(curr->left) dq.push_back({curr->left, 2*j});
+            if(curr->right) dq.push_back({curr->right, 2*j+1});
         }
-        return width;
+       }
+       return ans;
+
     }
 };
