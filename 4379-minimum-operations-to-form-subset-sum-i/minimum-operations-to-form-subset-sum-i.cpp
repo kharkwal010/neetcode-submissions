@@ -1,44 +1,48 @@
 class Solution {
 public:
-    int minOperations(vector<int>& nums, int sum) {
-        vector<int> dp(sum+1, INT_MAX);
-        dp[0] = 0;
-        for(int n: nums){
-            vector<pair<int, int>> terms;
-            // divide
-            int cnt = 0;
-            int term = n;
-            while(term>0){
-                if(term<=sum) terms.push_back({term, cnt});
-                term = term / 2;
-                cnt++;
-            }
-
-            // multiply
-            cnt = 1;
-            term = n*2;
-            while(term<=sum){
-                terms.push_back({term, cnt});
-                cnt++;
-                term = term * 2;
-            }
-            vector<int> newdp = dp;
-            for(auto[ele, op] : terms){
-                // cout<<ele<<" "<<op<<"   ";
-                for(int i=0; i<dp.size(); i++){
-                    if(dp[i]==INT_MAX) continue;
-                    if(i+ele<=sum){
-                        newdp[i+ele] = min(newdp[i+ele], dp[i] + op);
-                    }
-                }
-            }
-            dp = newdp;
-            // for(int ele: dp){
-            //     if(ele==INT_MAX) cout<<"i ";
-            //     else cout<<ele<<" ";
-            // }
-            // cout<<endl;
+    vector<vector<int>> memo;
+    int inf = 1e5;
+    int dp(vector<vector<pair<int, int>>>& terms, int sum, int i){
+        if(sum==0) return 0;
+        if(i==terms.size()) return inf;
+        if(memo[i][sum]!=-1) return memo[i][sum];
+        int ans = inf;
+        ans = min(ans, dp(terms, sum, i+1));
+        for(int j=0; j<terms[i].size(); j++){
+            if(terms[i][j].first>sum) break;
+            ans = min(ans, terms[i][j].second + dp(terms, sum - terms[i][j].first, i+1));
         }
-        return (dp[sum]==INT_MAX) ? -1 : dp[sum];
+        return memo[i][sum] = ans;        
+
+    }
+    int minOperations(vector<int>& nums, int sum) {
+        vector<vector<pair<int, int>>> terms(nums.size());
+        for(int i=0; i<nums.size(); i++){
+            int count = 0;
+            int n = nums[i];
+            while(n>sum){
+                n = n/2;
+                count++;
+            }
+            while(n>0){
+                terms[i].push_back({n, count});
+                n = n/2;
+                count++;
+            }
+            n = nums[i]*2;
+            count = 1;
+            while(n<=sum){
+                terms[i].push_back({n, count});
+                count++;
+                n=n*2;
+            }
+            sort(terms[i].begin(), terms[i].end());
+            
+        }
+
+        int n = nums.size();
+        memo.assign(n, vector<int>(sum+1, -1));
+        int ans = dp(terms, sum, 0);
+        return (ans==inf) ? -1 : ans;
     }
 };
