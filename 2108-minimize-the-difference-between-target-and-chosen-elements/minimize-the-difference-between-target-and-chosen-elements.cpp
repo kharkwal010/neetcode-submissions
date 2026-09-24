@@ -4,8 +4,9 @@ public:
     vector<int> negsum;
     int value(vector<vector<int>>& mat, int target, int i){
         if(i==mat.size()) return abs(target);
-        if(target<=negsum[i]){
-            return negsum[i] - target;
+        if(target<=0){
+            target -= negsum[i];
+            return abs(target);
         }
         if(memo[target][i]!=-1) return memo[target][i];
         int ans = INT_MAX;
