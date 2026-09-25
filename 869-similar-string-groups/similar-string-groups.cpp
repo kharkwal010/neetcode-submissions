@@ -29,7 +29,7 @@ public:
         for(int i=0; i<n; i++) parent[i] = i;
         for(int i=0; i<n; i++){
             for(int j=i+1; j<n; j++){
-                if(parent[i]==parent[j]) continue;
+                if(find(i)==find(j)) continue;
                 if(check(strs[i], strs[j])) unite(i, j);
             }
         }
