@@ -1,42 +1,35 @@
 class Solution {
 public:
-    long long countOfSubstrings(string word, int k) {
-       int count = 0;
-       unordered_map<char, int> ch;
-       unordered_set<char> vowel = {'a', 'e', 'i', 'o', 'u'};
-       int cons = 0;
-       long long ans = 0;
-       int i_far = 0;
-       int i_near = 0;
-
-       for(int i=0; i<word.size(); i++){
-            if(vowel.count(word[i])){
-                if(ch[word[i]]==0) count++;
-                ch[word[i]]++;
+    long long counting(string& word, int k){
+        int cons = 0;
+        int count = 0;
+        long long ans = 0;
+        int n = word.size();
+        unordered_map<char, int> freq;
+        unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u'};
+        int l = 0;
+        int r = 0;
+        while(r<word.size()){
+            if(vowels.count(word[r])){
+                if(freq[word[r]]==0) count++;
+                freq[word[r]]++;
             }
-            else{
-                cons++;
-                if(cons>k){
-                    while(vowel.count(word[i_near])){
-                        ch[word[i_near]]--;
-                        if(ch[word[i_near]]==0) count--;
-                        i_near++;
-                    }
-                    cons--;
-                    i_near++;
-                    i_far = i_near;
+            else cons++;
+            while(count==5 && cons>=k){
+                ans += n - r;
+                if(vowels.count(word[l])){
+                    freq[word[l]]--;
+                    if(freq[word[l]]==0) count--;
                 }
+                else cons--;
+                l++;                
             }
-            while(ch[word[i_near]]>1){
-                ch[word[i_near]]--;
-                i_near++;
-            }
-            if(count==5 && cons==k){
-                ans += i_near - i_far + 1;
-            }
-       }
+            r++;
+        }
         return ans;
-
-
+    }
+    long long countOfSubstrings(string word, int k) {
+        // cout<<counting(word, k)<<" "<<counting(word, k+1)<<endl;
+        return counting(word, k) - counting(word, k+1);
     }
 };
