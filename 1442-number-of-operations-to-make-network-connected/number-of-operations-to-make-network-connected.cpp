@@ -1,34 +1,26 @@
 class Solution {
-public:    
-    vector<int> visited;
-    void bfs(vector<vector<int>>& adj, int curr){
-        queue<int> q;
-        q.push(curr);
-        while(!q.empty()){
-            int top = q.front();
-            q.pop();
-            for(int nei: adj[top]){
-                if(visited[nei]) continue;
-                visited[nei] = true;
-                q.push(nei);
-            }
+public:   
+    void dfs(vector<vector<int>>& adj, vector<bool>& visited, int curr){
+        for(int nei: adj[curr]){
+            if(visited[nei]) continue;
+            visited[nei] = true;
+            dfs(adj, visited, nei);
         }
-        return;
     }
     int makeConnected(int n, vector<vector<int>>& connections) {
-        if(connections.size()<n-1) return -1;
-        visited.resize(n, false);
+        vector<bool> visited(n, false);
         vector<vector<int>> adj(n);
-        for(auto ed: connections){
-            adj[ed[0]].push_back(ed[1]);
-            adj[ed[1]].push_back(ed[0]);
+        for(auto& c: connections){
+            adj[c[0]].push_back(c[1]);
+            adj[c[1]].push_back(c[0]);
         }
+        if(connections.size()+1<n) return -1;
         int count = 0;
         for(int i=0; i<n; i++){
             if(!visited[i]){
                 visited[i] = true;
-                bfs(adj, i);
                 count++;
+                dfs(adj, visited, i);
             }
         }
         return count-1;
