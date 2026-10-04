@@ -9,29 +9,31 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+
+ /*
+ this will have 3 states:
+    me having : 1
+    child of one having : 0;
+    parent of one having : 2
+    overall needed (min(left, right) + 1)%3;
+ */
 class Solution {
 public:
-    int ans;
-    vector<int> camera(TreeNode* root){
-        if(!root) return {1,0,0};
-        vector<int> left = camera(root->left);
-        vector<int> right = camera(root->right);
-        int maxi = 0;
-        for(int i=0; i<3; i++){
-            if(left[i]==1) maxi = max(maxi, i);
-            if(right[i]==1) maxi = max(maxi, i);
-        }
-        int next = (3+maxi-1)%3;
-        if(next==1) ans++;
-        vector<int> nxt(3,0);
-        nxt[next] = 1;
-        return nxt;
+    int count;
+    int camera(TreeNode* root){
+        if(!root) return 2;
+        int left = camera(root->left);
+        int right = camera(root->right);
+        int curr = (min(left, right) + 1) % 3;
+        if(curr==1) count++;
+        return curr;
     }
     int minCameraCover(TreeNode* root) {
-        ans = 0;
-        vector<int> val= camera(root);
-        if(val[2]==1) ans++;
-        return ans;
+        count = 0;
+        int val = camera(root);
+        if(val==0) count++;        
+        return count;
 
     }
 };
