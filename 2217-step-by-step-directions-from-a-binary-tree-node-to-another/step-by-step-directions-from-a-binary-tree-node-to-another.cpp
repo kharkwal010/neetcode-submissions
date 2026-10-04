@@ -11,49 +11,41 @@
  */
 class Solution {
 public:
-    void direction(TreeNode* root, int value, string& comb, string& ans){
-        if(root->val==value){
-            ans = comb;
-            return;
+    bool dir(TreeNode* root, int value, string& ans){
+        if(!root) return false;
+        if(root->val==value) return true;
+        bool left = dir(root->left, value, ans);
+        if(left){
+            ans.push_back('L');
+            return true;
         }
-        if(root->left){
-            comb.push_back('L');
-            direction(root->left, value, comb, ans);
-            comb.pop_back();
+        else{
+            bool right = dir(root->right, value, ans);
+            if(right){
+                ans.push_back('R');
+                return true;
+            }
         }
-        if(root->right){
-            comb.push_back('R');
-            direction(root->right, value, comb, ans);
-            comb.pop_back();
-        }
+        return false;
     }
 
-    TreeNode* lca(TreeNode* root, int p, int q){
-        if(!root || root->val==p || root->val==q) return root;
-        TreeNode* left = lca(root->left, p, q);
-        TreeNode* right = lca(root->right, p, q);
+    TreeNode* anscestor(TreeNode* root, int st, int end){
+        if(!root || root->val==st || root->val==end) return root;
+        TreeNode* left = anscestor(root->left, st, end);
+        TreeNode* right = anscestor(root->right, st, end);
         if(left && right) return root;
         return (left) ? left : right;
     }
 
     string getDirections(TreeNode* root, int startValue, int destValue) {
-        TreeNode* ances = lca(root, startValue, destValue);
-        string up;
-        string down;
-        string ans;
-        string comb;
-        direction(root, startValue, comb, up);
-        comb = "";
-        direction(root, destValue, comb, down);
-        comb = "";
-        direction(root, ances->val, comb, ans);
-        
-        int j = ans.size();
-        int len = up.size();
-        string res(len-j, 'U');
-        for(int i=j; i<down.size(); i++){
-            res.push_back(down[i]);
-        }
-        return res;
+      string one = "";
+      string two = "";
+      TreeNode* ances = anscestor(root, startValue, destValue);
+      dir(ances, startValue, one);
+      dir(ances, destValue, two);
+      int n = one.size();
+      reverse(two.begin(), two.end());
+      string first = string(n,'U');
+      return first + two;
     }
 };
