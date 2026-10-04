@@ -11,34 +11,36 @@ class Solution {
 public:
     unordered_map<TreeNode*, vector<TreeNode*>> adj;
     void traverse(TreeNode* root){
-        if(!root) return;        
+        if(!root) return;
         if(root->left){
             adj[root].push_back(root->left);
             adj[root->left].push_back(root);
-            traverse(root->left);
         }
         if(root->right){
             adj[root].push_back(root->right);
             adj[root->right].push_back(root);
-            traverse(root->right);
         }
+        
+        traverse(root->left);
+        traverse(root->right);
     }
     vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
-        traverse(root);
         queue<TreeNode*> q;
         unordered_set<TreeNode*> visited;
-        q.push(target);
+        traverse(root);
         visited.insert(target);
-        while(!q.empty() && k>0){
+        q.push(target);
+        // cout<<adj[target].size()<<endl;
+        while(k>0){
             int sz = q.size();
+            if(sz==0) break;
             for(int i=0; i<sz; i++){
                 TreeNode* curr = q.front();
-                // cout<<curr->val<<endl;
                 q.pop();
-                for(TreeNode* nei: adj[curr]){
-                    if(visited.count(nei)) continue;
-                    visited.insert(nei);
-                    q.push(nei);
+                for(auto e: adj[curr]){
+                    if(visited.count(e)) continue;
+                    visited.insert(e);
+                    q.push(e);
                 }
             }
             k--;
