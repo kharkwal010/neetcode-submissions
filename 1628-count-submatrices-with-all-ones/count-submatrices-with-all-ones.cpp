@@ -1,11 +1,11 @@
 class Solution {
 public:
-    int sub(vector<int>& terms){
+    int count(vector<int>& terms){
         int n = terms.size();
-        vector<int> left(n, 0);
-        vector<int> right(n, 0);
+        vector<int> right(n);
+        vector<int> left(n);
         stack<pair<int, int>> st;
-        for(int i=0; i<n; i++){
+        for(int i=0; i<terms.size(); i++){
             while(!st.empty() && st.top().first>terms[i]){
                 right[st.top().second] = i - st.top().second;
                 st.pop();
@@ -19,36 +19,38 @@ public:
 
         for(int i=n-1; i>=0; i--){
             while(!st.empty() && st.top().first>=terms[i]){
-                left[st.top().second] = st.top().second - i;
+                left[st.top().second] = st.top().second  - i;
                 st.pop();
             }
             st.push({terms[i], i});
         }
         while(!st.empty()){
-            left[st.top().second] = st.top().second + 1;
+            left[st.top().second] = st.top().second +1;
             st.pop();
         }
 
         int ans = 0;
         for(int i=0; i<n; i++){
+            // cout<<right[i]<<" "<<left[i]<<" "<<terms[i]<<endl;
             ans += (right[i] * left[i])*terms[i];
         }
+        
         return ans;
+
     }
     int numSubmat(vector<vector<int>>& mat) {
-        int m = mat.size();
-        int n = mat[0].size();
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(mat[j][i]==1){
-                    if(j>0) mat[j][i] = mat[j-1][i] + 1;
-                }
+        for(int i=1; i<mat.size(); i++){
+            for(int j=0; j<mat[0].size(); j++){
+                if(mat[i][j]==1) mat[i][j] += mat[i-1][j];
             }
         }
+         
         int ans = 0;
-        for(int i=0; i<m; i++){
-            ans += sub(mat[i]);
+        for(int i=0; i<mat.size(); i++){
+            ans += count(mat[i]);
+            // cout<<endl;
         }
-        return ans;        
+        return ans;
+
     }
 };
