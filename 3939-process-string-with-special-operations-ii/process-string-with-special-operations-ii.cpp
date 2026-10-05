@@ -1,52 +1,30 @@
 class Solution {
 public:
     char processStr(string s, long long k) {
-        long long len = 0;
-        int n = s.size();
-
-        unordered_map<int, long long> pref;
-
-        for (int i = 0; i < n; i++) {
-
-            char c = s[i];
-
-            if (c == '*') {
-                pref[i] = len;
-                len = max(len - 1, 0LL);
-            }
-            else if (c == '#') {
-                len *= 2;
-            }
-            else if (c != '%') {
-                len++;
-            }
+      long long len = 0;
+      for(char c: s){
+        if(c=='%') continue;
+        else if(c=='*'){
+            if(len>0) len--;
         }
-
-        if (len <= k) return '.';
-
-        for (int i = n - 1; i >= 0; i--) {
-            if (s[i] == '#') {
-                long long half = len / 2;
-
-                if (k >= half)
-                    k -= half;
-
-                len = half;
+        else if(c=='#') len*=2;
+        else len++;
+      }
+        if(k>=len) return '.';
+        for(int i=s.size()-1; i>=0; i--){
+            if(s[i]=='*') len++;
+            else if(s[i]=='#'){
+                if(k>=len/2) k -= len/2;
+                len = len/2;
             }
-            else if (s[i] == '%') {
-                k = len - 1 - k;
-            }
-            else if (s[i] == '*') {
-                len = pref[i];
-            }
-            else {
+            else if(s[i]=='%') k = len - 1 - k;
+            else{
                 len--;
-
-                if (len == k)
-                    return s[i];
+                if(len==k) return s[i];
             }
         }
+        return s[0];
 
-        return '.';
+
     }
 };
