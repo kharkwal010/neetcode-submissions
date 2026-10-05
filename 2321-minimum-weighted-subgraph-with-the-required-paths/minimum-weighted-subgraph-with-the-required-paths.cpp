@@ -1,47 +1,43 @@
 class Solution {
 public:
-    vector<vector<vector<int>>> adj;
-    void dist(int n, vector<long long>& one, int src, vector<vector<vector<int>>>& adj){
+    long long inf = 1e11;
+    vector<long long> weights(vector<vector<vector<int>>>& adj, int node, int n){
+        vector<long long> dist(n, inf);
+        dist[node] = 0;
         priority_queue<vector<long long>, vector<vector<long long>>, greater<vector<long long>>> minheap;
-        minheap.push({0, src});
-        one[src]=0;
+        minheap.push({0, node});
         while(!minheap.empty()){
             auto top = minheap.top();
             minheap.pop();
-            if(one[top[1]]<top[0]) continue;
-            one[top[1]] = top[0];
-            for(auto nei: adj[top[1]]){
-                if (top[0] + nei[0] < one[nei[1]]) {
-                    one[nei[1]] = top[0] + nei[0];
-                    minheap.push({one[nei[1]], nei[1]});
-                }
+            long long w = top[0];
+            int curr = top[1];
+            if(dist[curr]<w) continue;
+            for(auto nei: adj[curr]){
+                if(dist[nei[1]]<=w + nei[0]) continue;
+                dist[nei[1]] = w + nei[0];
+                minheap.push({dist[nei[1]], nei[1]});
             }
         }
-        return;
+        return dist;
     }
     long long minimumWeight(int n, vector<vector<int>>& edges, int src1, int src2, int dest) {
         vector<vector<vector<int>>> adj(n);
+        vector<vector<vector<int>>> radj(n);
         for(auto& ed: edges){
             adj[ed[0]].push_back({ed[2], ed[1]});
+            radj[ed[1]].push_back({ed[2], ed[0]});
         }
-        vector<vector<vector<int>>> radj(n);
-        for(auto& ed: edges) radj[ed[1]].push_back({ed[2], ed[0]});
-        long long INF = 1e18;
-        vector<long long> one(n, INF);
-        vector<long long> two(n, INF);
-        dist(n, one, src1, adj);
-        dist(n, two, src2, adj);
-        vector<long long> destiny(n, INF);
-        dist(n, destiny, dest, radj);
-       long long ans = INF;
+
+        vector<long long> s1 = weights(adj, src1, n);
+        vector<long long> s2 = weights(adj, src2, n);
+        vector<long long> d = weights(radj, dest, n);
+        long long ans = inf;
         for(int i=0; i<n; i++){
-            if(one[i]==INF || two[i] == INF || destiny[i]==INF) continue;
-            ans = min(ans, one[i] + two[i]+ destiny[i]);
+            ans = min(ans, s1[i]+s2[i]+d[i]);
         }
-        if(ans==INF) return -1;
-       
-        return ans;
+        return (ans==inf) ? -1 : ans;
 
 
+        
     }
 };
