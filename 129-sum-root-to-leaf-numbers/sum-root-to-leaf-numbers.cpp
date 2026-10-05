@@ -11,34 +11,18 @@
  */
 class Solution {
 public:
-    vector<string> terms(TreeNode* root){
-        if(!root->left && !root->right) return {to_string(root->val)};
-        vector<string> left;
-        vector<string> right;
-        if(root->left) left = terms(root->left);
-        if(root->right) right = terms(root->right);
-        char c = root->val + '0';
-        vector<string> ans;
-        for(auto& ele: left){
-            string temp = ele;
-            temp.push_back(c);
-            ans.push_back(temp);
+    int sum = 0;
+    void add(TreeNode* root, int val){
+        if(!root) return;
+        int curr = val*10 + root->val;
+        if(!root->left && !root->right){
+            sum += curr;
         }
-        for(auto& ele: right){
-            string temp = ele;
-            temp.push_back(c);
-            ans.push_back(temp);
-        }
-        return ans;
+        add(root->left, curr);
+        add(root->right, curr);
     }
     int sumNumbers(TreeNode* root) {
-        if(!root) return 0;
-        vector<string> curr = terms(root);
-        int ans = 0;
-        for(string& s: curr){
-            reverse(s.begin(), s.end());
-            ans += stoi(s);
-        }
-        return ans;
+        add(root, 0);
+        return sum;
     }
 };
