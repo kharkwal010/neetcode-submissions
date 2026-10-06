@@ -1,31 +1,38 @@
 class Solution {
 public:
     long long validSubstringCount(string word1, string word2) {
-        int n = word1.size();
-        if(n<word2.size()) return 0;
-        vector<int> freq(26,0);
-        for(char c: word2){
-            freq[c-'a']++;
-        }
-        int req = 0;
-        for(int i=0; i<26; i++) if(freq[i]>0) req++;
-        int l = 0;
         int r = 0;
-        vector<int> res(26, 0);
-        long long count = 0;
-        while(r<word1.size()){
-            int j = word1[r]-'a';
-            res[j]++;
-            if(res[j]==freq[j]) req--;
-            while(req==0){
-                count += (n - r);
-                int k = word1[l]-'a';
-                if(res[k]==freq[k]) req++;
-                res[k]--;
-                l++;
+        int l = 0;
+        vector<int> search(26,0);
+        int count = 0;
+        for(char c: word2){
+            search[c-'a']++;
+        }
+        for(int i: search) if(i>0) count++;
+        int found = 0;
+        vector<int> take(26,0);
+
+        long long ans = 0;
+        int n = word1.size();
+        while(r<=word1.size()){
+            if(found==count){
+                ans += n - r + 1;
+                int j = word1[l]-'a';
+                if(take[j]==search[j]) found--;
+                take[j]--;
+                l++;  
+                continue;              
+            }
+            if(r==word1.size()) break;
+            int k = word1[r]-'a';
+            take[k]++;
+            if(take[k]==search[k]){
+                found++;
             }
             r++;
+            // cout<<found<<" "<<count<<endl;
         }
-        return count;
+        return ans;
+
     }
 };
