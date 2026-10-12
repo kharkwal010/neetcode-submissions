@@ -1,24 +1,37 @@
 class Solution {
 public:
-    vector<vector<int>> palin;
+    vector<vector<bool>> pal;
+    bool palin(string s, int i, int curr){
+        if(i==s.size()) return false;
+        if(curr==2){
+           return pal[i][s.size()-1];
+        }
+        bool ans = false;
+        for(int j=i; j<s.size(); j++){
+            if(pal[i][j]) ans = ans || palin(s, j+1, curr+1);
+        }
+        return ans;
+    }
     bool checkPartitioning(string s) {
         int n = s.size();
-        palin.resize(n, vector<int>(n, false));
-        for(int len = 1; len<=n; len++){
-            for(int l=0; l<n-len+1; l++){
-                int r = l+len-1;
-                if(s[l]==s[r]){
-                    if(l+1>r-1 || palin[l+1][r-1]) palin[l][r] = true;
-                }
+        pal.resize(n, vector<bool>(n, false));
+        for(int i=0; i<s.size(); i++){
+            pal[i][i] = true;
+            if(i<n-1 && s[i]==s[i+1]) pal[i][i+1] = true;
+        }
+        for(int len = 2; len<s.size(); len++){
+            for(int i=0; i<n-len; i++){
+                int r = i+len;
+                if(pal[i+1][r-1] && s[i]==s[r]) pal[i][r] = true;
             }
         }
-        for(int i=0; i<n-2; i++){
-            if(palin[0][i]){
-                for(int j=i+1; j<n-1; j++){
-                    if(palin[i+1][j] && palin[j+1][n-1]) return true;
-                }
-            }
-        }
-        return false;
+        // for(int i=0; i<n; i++){
+        //     for(int j=i; j<n; j++){
+        //         cout<<i<<" "<<j<<" "<<pal[i][j]<<endl;
+        //     }
+        // }
+        return palin(s, 0, 0);
+
+        
     }
 };
