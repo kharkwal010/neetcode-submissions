@@ -1,50 +1,48 @@
 class Solution {
 public:
-    vector<string> comb;
-    int mod = 1e9+7;
-    void generate(int i, vector<char>& val, int& m, string curr, char prev){
-        if(i==m){
-            comb.push_back(curr);
+    void gen(string& curr, vector<string>& strs, int m, int prev){
+        if(m==0){
+            strs.push_back(curr);
             return;
         }
-        for(int j=0; j<3; j++){
-            if(val[j]==prev) continue;
-            curr.push_back(val[j]);
-            generate(i+1, val, m, curr, val[j]);
+        for(int i=0; i<3; i++){
+            if(i==prev) continue;
+            curr.push_back(i+'0');
+            gen(curr, strs, m-1, i);
             curr.pop_back();
         }
-        return;
-
+        return;        
     }
-
-    vector<vector<int>> memo;
-    int dp(int prev, int i, int& n, int& m){
-        if(i==n) return 1;
-        if(memo[prev][i]!=-1) return memo[prev][i];
+    int memo[1001][48];
+    int mod = 1e9+7;
+    int color(int& m, int n, int prev, vector<string>& terms){
+        if(n==0) return 1;
+        if(memo[n][prev]!=-1) return memo[n][prev];
         long long ans = 0;
-        for(int k=0; k<comb.size(); k++){
-            bool match = false;
+        for(int i=0; i<terms.size(); i++){
+            bool use = true;
             for(int j=0; j<m; j++){
-                if(comb[prev][j]==comb[k][j]){
-                    match = true;
+                if(terms[prev][j]==terms[i][j]){
+                    use = false;
                     break;
                 }
             }
-            if(!match) ans = (ans + dp(k, i+1, n, m))%mod;
+            if(use) ans = (ans +  color(m, n-1, i, terms))%mod;
+            
         }
-        return memo[prev][i] = ans;
-
+        return memo[n][prev] = ans;
     }
+
     int colorTheGrid(int m, int n) {
-        vector<char> val = {'a', 'b', 'c'};
-        generate(0, val, m, "", 'd');
-
-        int c = comb.size();
-        memo.resize(c, vector<int>(n, -1));
+        vector<string> terms;
+        string curr = "";
+        gen(curr, terms, m, 3);
+        memset(memo, -1, sizeof(memo));
         long long ans = 0;
-        for(int j=0; j<comb.size(); j++){
-            ans = (ans + dp(j, 1, n, m))%mod;
+        for(int i=0; i<terms.size(); i++){
+            ans = (ans + color(m, n-1, i, terms))%mod;
         }
-        return ans;        
+        return ans;     
     }
+    
 };
