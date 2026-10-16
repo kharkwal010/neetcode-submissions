@@ -1,57 +1,60 @@
 class Solution {
 public:
-    vector<int> btime;
-    bool traverse(vector<vector<int>>& adj, int bob, int parent, int time){
-        if(bob==0){
-            btime[bob] = time;
-            return true;
-        }
-        bool status = false;
+    vector<bool> path;
+    bool dfs(vector<vector<int>>& adj, int bob, int parent){
+        if(bob==0) return path[bob] = true;
+        bool ans = false;
         for(int nei: adj[bob]){
-            if(nei==parent) continue;
-            status = status || traverse(adj, nei, bob, time+1);
+            if (nei==parent) continue;
+            ans = ans || dfs(adj, nei, bob);
         }
-        if(status){
-            btime[bob] = time;
-            return true;
-        }
-        return false;
+        return path[bob] = ans;
     }
-
-    void profit(vector<vector<int>>& adj, int nde, int& ans, int curr, int parent, int time, vector<int>& amount){
-        int contri = amount[nde];
-        if(time>btime[nde]) contri = 0;
-        else if(time==btime[nde]) contri = contri / 2;
-        
-        if(adj[nde].size()==1 && parent!=-1){
-            // cout<<curr<<endl;
-            ans = max(ans, curr + contri);
-            return;
-        }
-
-        for(int nei: adj[nde]){
-            if(nei==parent) continue;            
-            profit(adj, nei, ans, curr + contri, nde, time+1, amount);
-            // cout<<nei<<" "<<curr + contri<<endl;
+    vector<int> btime;
+    void pathbob(vector<vector<int>>& adj, int bob){
+        queue<int> q;
+        int time = 0;
+        q.push(bob);
+        while(!q.empty()){
+            bob = q.front();
+            q.pop();
+            btime[bob] = time;
+            path[bob] = false;
+            for(int nei: adj[bob]){
+                if(path[nei]) q.push(nei);
+            }
+            time++;
         }
         return;
-
     }
-    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
-        int n = edges.size()+1;
-        btime.resize(n, INT_MAX);
-        vector<vector<int>> adj(n);
-        for(auto& ed: edges){
-            adj[ed[0]].push_back(ed[1]);
-            adj[ed[1]].push_back(ed[0]);
+
+    int val(vector<vector<int>>& adj, int alice, int aparent, vector<int>& amount, int time){
+        long long curr = 0;
+        if(time==btime[alice]) curr = amount[alice]/2;
+        else if(time<btime[alice]) curr = amount[alice];
+        int sum = curr;
+        int nxt = INT_MIN;
+        if (adj[alice].size() == 1 && alice != 0) return curr;
+        for(int nei: adj[alice]){
+            if(nei==aparent) continue;            
+            nxt = max(nxt, val(adj, nei, alice, amount, time+1));
         }
-        traverse(adj, bob, -1, 0);
+        return sum + nxt;
+    }
 
-        int ans = INT_MIN;
-        profit(adj, 0, ans, 0, -1, 0, amount);
-        return ans;
-
-
+    
+    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
+        int n = edges.size() + 1;
+        path.assign(n, 0);
+        vector<vector<int>> adj(n);
+        for(auto& e: edges){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        dfs(adj, bob, -1);
+        btime.assign(n, INT_MAX);
+        pathbob(adj, bob);
+        return val(adj, 0, -1, amount, 0);
         
     }
 };
