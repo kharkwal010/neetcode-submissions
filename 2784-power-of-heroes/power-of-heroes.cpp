@@ -1,20 +1,17 @@
 class Solution {
 public:
     int sumOfPower(vector<int>& nums) {
-        int mod= 1e9+7;
-        long long sum = 0;
-        
-        sort(nums.begin(), nums.end());
-        long long ans = 0;
-
-        for(int i=0; i<nums.size(); i++){
-            long long contri = (sum + nums[i])%mod;
-            long long curr = ((long long)nums[i]*nums[i])%mod;
-            // cout<<contri<<" "<<curr<<endl;
-            ans = (ans + contri * curr)%mod;
-            sum = (2*sum + nums[i])%mod;           
-            
-        }
-        return ans;
+       sort(nums.begin(), nums.end());
+       long long prev = 0;
+       long long sum = 0;
+       long long ans = 0;
+       int mod = 1e9+7;
+       for(int i=0; i<nums.size(); i++){
+            long long contri = ((prev + nums[i]) % mod
+                    * ((1LL * nums[i] * nums[i]) % mod)) % mod;
+            ans = (ans + contri)%mod;
+            prev = (2*prev + nums[i])%mod;
+       }
+       return ans;
     }
 };
