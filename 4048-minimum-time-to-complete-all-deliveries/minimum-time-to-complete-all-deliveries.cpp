@@ -1,26 +1,28 @@
 class Solution {
 public:
-    bool check(vector<int>& d, vector<int>& r, long long time){
-        long long t_eff = time - time / lcm(r[0], r[1]);
-        if( (long long)d[0]+d[1]>t_eff) return false;
-        long long t1 = time - time / r[0];
-        if( (long long)d[0]>t1) return false;
-        long long t2 = time - time / r[1];
-        if( (long long)d[1]>t2) return false;
+    bool check(vector<int>& d, vector<int>& r, long long& lcm, long long m){
+        long long extra = m / lcm;
+        if(1LL* d[0] + d[1] > m - extra) return false;
+        if(d[0]>m-m/r[0]) return false;
+        if(d[1]>m-m/r[1]) return false;
         return true;
     }
-    long long minimumTime(vector<int>& d, vector<int>& r) {
-        long long l = (long long)d[0] + d[1];
-        long long ri = 2*l;
-        long long ans = ri;
-        while(l<=ri){
-            long long m = (l+ri)/2;
-            if(check(d, r, m)){
+    long long minimumTime(vector<int>& d, vector<int>& ri) {
+        long long l = 1LL*d[0] + d[1];
+        long long mul = lcm(ri[0], ri[1]);
+        long long r = 2*l;
+        long long ans = r;
+        while(l<=r){
+            long long m = (l+r)/2;
+            cout<<m<<endl;
+            if(check(d, ri, mul, m)){
                 ans = m;
-                ri = m-1;
+                r = m-1;
             }
-            else l = m+1;
+            
+            else l = m +1;
         }
         return ans;
+
     }
 };
