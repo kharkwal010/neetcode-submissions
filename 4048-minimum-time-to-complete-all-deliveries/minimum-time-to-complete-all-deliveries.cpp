@@ -14,7 +14,6 @@ public:
         long long ans = r;
         while(l<=r){
             long long m = (l+r)/2;
-            cout<<m<<endl;
             if(check(d, ri, mul, m)){
                 ans = m;
                 r = m-1;
