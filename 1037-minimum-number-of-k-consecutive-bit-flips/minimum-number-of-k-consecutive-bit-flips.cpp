@@ -1,19 +1,18 @@
 class Solution {
 public:
     int minKBitFlips(vector<int>& nums, int k) {
-        int n = nums.size();
-        vector<int> changes(n+1, 0);
-        int flips = 0;
-        for(int i=0; i<n; i++){
-            if(i>0) changes[i] += changes[i-1];
-            int curr = (changes[i] + nums[i])%2;
-            if(curr==0){
-                if(i+k>n) return -1;
-                flips++;
-                changes[i+k]-=1;
-                changes[i]+=1;
+        int count= 0;
+        int n = nums.size(); 
+        vector<int> prefix(n+1, 0);
+        for(int i=0; i<nums.size(); i++){
+            if(i>0) prefix[i] += prefix[i-1];
+            if((nums[i]+prefix[i])%2==0){
+                if(i+k>=prefix.size()) return -1;
+                count++;
+                prefix[i] += 1;
+                prefix[i+k] -= 1;
             }
         }
-        return flips;
+        return count;
     }
 };
