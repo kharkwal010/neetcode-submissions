@@ -1,26 +1,22 @@
 class Solution {
 public:
     vector<vector<vector<long long>>> memo;
-    long long sum(vector<int>& nums, int i, bool del, bool add){
+
+    long long solve(vector<int>& nums, int i, bool add, bool skip){
         if(i==nums.size()) return 0;
-        if(memo[i][del][add]!=LLONG_MIN) return memo[i][del][add];
+        if(memo[i][add][skip]!=-1) return memo[i][add][skip]; 
         long long ans = 0;
-        int sign = (add) ? 1 : -1;
-        long long pick = sign * nums[i] + sum(nums, i+1, del, !add);
-        ans = max(ans, pick);
-        if(del){
-            long long skip = sum(nums, i+1, !del, add);
-            ans = max(ans, skip);
-        }
-        return memo[i][del][add] = ans;
+        if(skip) ans = max(ans, solve(nums, i+1, add, !skip));
+        long long term = (add) ? nums[i] : nums[i]*-1;
+        ans = max(ans, term + solve(nums, i+1, !add, skip));
+        return memo[i][add][skip]=ans;
     }
     long long maxAlternatingSum(vector<int>& nums) {
         int n = nums.size();
-        memo.resize(n, vector<vector<long long>>(2, vector<long long>(2, LLONG_MIN)));
+        memo.resize(n, vector<vector<long long>>(2, vector<long long>(2, -1)));
         long long ans = LLONG_MIN;
         for(int i=0; i<nums.size(); i++){
-            long long val = nums[i] + sum(nums, i+1, true, false);
-            ans = max(ans, val);
+            ans = max(ans, nums[i] + solve(nums, i+1, false, true));
         }
         return ans;
     }
