@@ -1,41 +1,37 @@
 class Solution {
 public:
-    bool bfs(vector<vector<int>>& adj, vector<int>& visited, int curr){
-        visited[curr] = 0;
+    vector<int> col;
+    bool bfs(vector<vector<int>>& adj, int nde){
         queue<int> q;
-        q.push(curr);
-        bool col = true;
+        q.push(nde);
+        col[nde] = 1;
         while(!q.empty()){
-            int size = q.size();
-            for(int i=0; i<size; i++){
-                int nde = q.front();
+            int sz = q.size();
+            for(int k=0; k<sz; k++){
+                int node = q.front();
                 q.pop();
-                for(int nei: adj[nde]){
-                    if(visited[nei]==2){
-                        visited[nei] = col;
+                for(int nei: adj[node]){
+                    if(col[nei]==col[node]) return false;
+                    if(col[nei]==2){
+                        col[nei] = 1-col[node];
                         q.push(nei);
                     }
-                    else if(visited[nei]!=col) return false;
                 }
             }
-            col = !col;
         }
         return true;
     }
     bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        col.assign(n, 2);
         vector<vector<int>> adj(n);
-        for(auto ele: dislikes){
-            adj[ele[0]-1].push_back(ele[1]-1);
-            adj[ele[1]-1].push_back(ele[0]-1);
+        for(auto d: dislikes){
+            adj[d[0]-1].push_back(d[1]-1);
+            adj[d[1]-1].push_back(d[0]-1);
         }
-        vector<int> visited(n, 2);
         for(int i=0; i<n; i++){
-            if(visited[i]==2){
-                if(!(bfs(adj, visited, i))){
-                    // for(int i=0; i<n; i++) cout<<visited[i]<<" ";
-                    return false;
-                }
-            }
+            if(col[i]!=2) continue;
+            bool res = bfs(adj, i);
+            if(!res) return false;
         }
         return true;
     }
