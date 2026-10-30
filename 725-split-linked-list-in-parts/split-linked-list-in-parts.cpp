@@ -21,7 +21,7 @@ public:
         int extra = n % k;
         ListNode* curr = head;
         ListNode* prev = nullptr;
-        vector<ListNode*> res(k, nullptr);
+        vector<ListNode*> res(k);
         for(int i=0; i<k; i++){
             res[i] = curr;
             for(int j = 0; j<block; j++){
