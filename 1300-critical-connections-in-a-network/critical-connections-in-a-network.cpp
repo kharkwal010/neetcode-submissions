@@ -12,16 +12,10 @@ public:
             if(nei==parent) continue;
             if(time[nei]==-1){
                 dfs(adj, nei, curr);
-                if(time[curr]<low[nei]){
-                    ans.push_back({curr, nei});
-                }
-                else{
-                    low[curr] = min(low[nei], low[curr]);
-                }
+                if(time[curr]<low[nei])  ans.push_back({curr, nei});
             }
-            else{
-                low[curr] = min(low[nei], low[curr]);
-            }
+            low[curr] = min(low[nei], low[curr]);
+
         }
         return;
     }
