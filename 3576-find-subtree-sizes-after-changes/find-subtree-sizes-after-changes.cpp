@@ -1,37 +1,43 @@
 class Solution {
 public:
-    void shift(vector<vector<int>>& adj, vector<int>& parent, vector<int> values, int curr, string& s){
-        if(values[s[curr]-'a']!=-1) parent[curr] = values[s[curr]-'a'];
-        values[s[curr]-'a'] = curr;
-        for(int nei: adj[curr]){
-            shift(adj, parent, values, nei, s);
+    vector<vector<int>> adj;
+    vector<int> seen;
+    void dfs(int node, string& s, vector<int>& parent){
+        int j = s[node] - 'a';
+        if(seen[j]!=-1){
+            parent[node] = seen[j];
         }
-        values[s[curr]-'a'] = -1;
+        int prev = seen[j];
+        seen[j] = node;
+        for(int nei: adj[node]){
+            dfs(nei, s, parent);
+        }
+        seen[j] = prev;
+        return;        
     }
-
-    vector<int> size;
-    int dfs(vector<vector<int>>& adj, int curr){
-        int sz = 1;
-        for(int nei: adj[curr]){
-            sz += dfs(adj, nei);
+    vector<int> res;
+    void sizes(int node){
+        res[node] = 1;
+        for(int nei: adj[node]){
+            sizes(nei);
+            res[node] += res[nei];
         }
-        return size[curr] = sz;
+        return;
     }
     vector<int> findSubtreeSizes(vector<int>& parent, string s) {
-        int n = parent.size();
-        vector<vector<int>> adj(n);
-        for(int i=1; i<parent.size(); i++){
+        int n = s.size();
+        adj.resize(n);
+        seen.assign(26, -1);
+        for(int i=1; i<n; i++){
             adj[parent[i]].push_back(i);
         }
-        vector<int> values(26, -1);
-        shift(adj, parent, values, 0, s);
-        vector<vector<int>> nadj(n);
-        for(int i=1; i<parent.size(); i++){
-            nadj[parent[i]].push_back(i);
+        dfs(0, s, parent);
+        adj.assign(n, {});
+        for(int i=1; i<n; i++){
+            adj[parent[i]].push_back(i);
         }
-        // for(int p: parent) cout<<p<<" ";
-        size.resize(n, 0);
-        dfs(nadj, 0);
-        return size;
+        res.resize(n);
+        sizes(0);
+        return res;
     }
 };
