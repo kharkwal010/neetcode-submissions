@@ -1,11 +1,11 @@
 class Solution {
 public:
     int ans = 0;
-    int path(vector<vector<int>>& adj, string& s, int curr, int parent){
+    int path(vector<vector<int>>& adj, string& s, int curr){
         int first = 0;
         int second = 0;
         for(int nei: adj[curr]){
-            int ns = path(adj, s, nei, curr);
+            int ns = path(adj, s, nei);
             if(s[curr]!=s[nei]){
                 if(ns>=first){
                     second = first;
@@ -23,7 +23,7 @@ public:
         for(int i=1; i<n; i++){
             adj[parent[i]].push_back(i);
         }
-        path(adj, s, 0, -1);
+        path(adj, s, 0);
         return ans;
 
     }
