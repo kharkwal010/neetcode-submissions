@@ -1,35 +1,46 @@
 class Solution {
 public:
     int shortestPathLength(vector<vector<int>>& graph) {
-        int n = graph.size();
-        int target = (1<<n)-1;
-        vector<vector<bool>> visited(n, vector<bool>(1<<n, false));
-        queue<pair<int, int>> q;
-        for(int i=0; i<n; i++){
-            int mask = 1<<i;
-            q.push({i, mask});
-            visited[i][mask] = true;
-        }
-        int step = 0;
-        while(!q.empty()){
+       int n = graph.size();
+       vector<vector<bool>> vis(n, vector<bool>((1<<n)+1, false));
+       queue<pair<int, int>> q;
+       for(int i=0; i<n; i++){
+            q.push({i, 1<<i});
+            vis[i][1<<i] = true;
+       }
+       int cnt = 0;
+    //    cout<<(1<<n)-1<<endl;
+       while(!q.empty()){
             int sz = q.size();
-            for(int k=0; k<sz; k++){
-                auto[nde, mask] = q.front();
+            for(int k = 0; k<sz; k++){
+                auto[curr, mask] = q.front();
                 q.pop();
-                if(mask==target) return step;
-                for(int nei: graph[nde]){
-                    int newmask = mask | 1<<nei;
-                    if(visited[nei][newmask]) continue;
-                    visited[nei][newmask] = true;
-                    q.push({nei, newmask});
+                // cout<<curr<<" "<<mask<<endl;
+                if(mask==((1<<n)-1)) return cnt;
+                for(int nei: graph[curr]){
+                    int nmask = mask | (1<<nei);
+                    if(vis[nei][nmask]) continue;
+                    vis[nei][nmask] = true;
+                    q.push({nei, nmask});
                 }
             }
-            step++;
-        }
-        return -1;
-
+            cnt++;
+       }
+       return -1;
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
