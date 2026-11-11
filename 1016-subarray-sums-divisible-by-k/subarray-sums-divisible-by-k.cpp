@@ -7,8 +7,7 @@ public:
         int ans = 0;
         for(int n: nums){
             sum += n;
-            int rem = sum%k;
-            if(rem<0) rem += k;
+            int rem = (k + sum%k) % k;
             ans += prefix[rem];
             prefix[rem]++;
         }
