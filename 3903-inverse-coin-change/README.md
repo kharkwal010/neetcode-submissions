@@ -16,7 +16,7 @@
 
 <p><strong>Explanation:</strong></p>
 
-<table style="border: 1px solid black;">
+<table border="1" bordercolor="#ccc" cellpadding="5" cellspacing="0" style="border-collapse:collapse;">
 	<tbody>
 		<tr>
 			<th style="border: 1px solid black;">Amount</th>
@@ -75,7 +75,8 @@
 		</tr>
 	</tbody>
 </table>
-<strong class="example">Example 2:</strong>
+
+<p><strong class="example">Example 2:</strong></p>
 
 <div class="example-block">
 <p><strong>Input:</strong> <span class="example-io">numWays = [1,2,2,3,4]</span></p>
@@ -84,7 +85,7 @@
 
 <p><strong>Explanation:</strong></p>
 
-<table style="border: 1px solid black;">
+<table border="1" bordercolor="#ccc" cellpadding="5" cellspacing="0" style="border-collapse:collapse;">
 	<tbody>
 		<tr>
 			<th style="border: 1px solid black;">Amount</th>
