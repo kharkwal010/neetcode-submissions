@@ -1,31 +1,40 @@
 class Solution {
 public:
     int maxPoints(vector<vector<int>>& points) {
-        int ans = 1;
-        for(int i=0; i<points.size(); i++){
-            map<pair<int, int>, int> mp;
-            for(int j=i+1; j<points.size(); j++){
-                int del_x = points[i][0] - points[j][0];
-                int del_y = points[i][1] - points[j][1];
-                if(del_x==0){
-                    del_y = 1;                    
-                }
-                else if(del_y==0){
-                    del_x=1;
-                }
-                else{
-                    int neg =((del_x*del_y) < 0) ? -1 : 1;
-                    int div = gcd(del_x, del_y);
-                    del_x = neg * abs(del_x/div);
-                    del_y = abs(del_y/div);
-                }
-                mp[{del_x, del_y}]++;
+       map<tuple<int, int, int>, int> mp;
+        int n = points.size();
+        if(n<=2) return n;
+        int m = 0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i==j) continue;
+                int x1 = points[i][0];
+                int y1 = points[i][1];
+                int x2 = points[j][0];
+                int y2 = points[j][1];
+
+                int a = (y2 - y1);
+                int b = (x1 - x2);
+                int c = -1 * (a*x1 + b*y1);
+
+                int g = gcd(a, gcd(b, c));
                 
-                
-                ans=max(ans, mp[{del_x, del_y}]+1);                
+                a = a/g;
+                b = b/g;
+                c = c/g;
+
+                if(a<0 || (a==0 && b<0)){
+                    a *= -1;
+                    b *= -1;
+                    c *= -1;
+                }
+
+                mp[{a, b, c}]++;
+                m = max(m, mp[{a, b, c}]);
             }
-            mp.clear();
+
         }
-        return ans;
+        cout<<m;
+        return (1 + sqrt(1 + 4*m))/2;
     }
 };
