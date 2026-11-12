@@ -3,7 +3,7 @@ public:
     int maxPoints(vector<vector<int>>& points) {
        map<tuple<int, int, int>, int> mp;
         int n = points.size();
-        if(n<=2) return n;
+        // if(n<=2) return n;
         int m = 0;
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
