@@ -15,17 +15,16 @@ public:
         if(!root) return false;
         if(root->val==value) return true;
         bool left = dir(root->left, value, ans);
+        bool right = dir(root->right, value, ans);
         if(left){
             ans.push_back('L');
             return true;
         }
-        else{
-            bool right = dir(root->right, value, ans);
-            if(right){
-                ans.push_back('R');
-                return true;
-            }
+        else if(right){
+            ans.push_back('R');
+            return true;
         }
+    
         return false;
     }
 
@@ -49,3 +48,8 @@ public:
       return first + two;
     }
 };
+
+
+/*
+root ki taraf lca ko khichre and last m root will return lca if it is in left or in right
+*/
