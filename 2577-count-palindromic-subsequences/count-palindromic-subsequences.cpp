@@ -1,42 +1,39 @@
 class Solution {
 public:
     int countPalindromes(string s) {
+        int mod = 1e9 + 7;
+        long long cnt = 0;
         int n = s.size();
         if(n<5) return 0;
-        vector<int> right(10, 0);
-        vector<vector<int>> rpair(10, vector<int>(10, 0));
-        // generate a, b pair frequency:
-        for(char c: s){
-            int j = c - '0';
-            for(int i=0; i<10; i++){
-                rpair[i][j] += right[i];
+        vector<int> right(10,0);
+        vector<vector<int>> rpairs(10, vector<int>(10, 0));
+        for(int i=0; i<n-1; i++){
+            int k = s[i] - '0';
+            for(int j=0; j<10; j++){
+                rpairs[j][k] += right[j];
             }
-            right[j]++;
+            right[k]++;
         }
+        vector<int> left(10, 0);
+        vector<vector<int>> lpairs(10, vector<int>(10, 0));
+        for(int i=n-1; i>0; i--){
+            int k = s[i]-'0';
+            for(int j=0; j<10; j++){
+                lpairs[k][j] += left[j];
+            }
+            left[k]++;
+            int x = s[i-1]-'0';
+            right[x]--;
+            for(int j=0; j<10; j++){
+                rpairs[j][x] -= right[j];
+            }
 
-        long long ans = 0;
-        int mod = 1e9+7;
-
-        vector<int> left(10,0);
-        vector<vector<int>> lpair(10, vector<int>(10, 0));
-        for(char c: s){
-            int j = c - '0';
-            right[j]--;
-            for(int i=0; i<10; i++){
-                rpair[j][i] -= right[i];
-            } 
-
-            for(int a=0; a<10; a++){
-                for(int b=0; b<10; b++){
-                    ans = (ans + 1LL*rpair[a][b] * lpair[b][a])%mod;
+            for(int m=0; m<10; m++){
+                for(int n=0; n<10; n++){
+                    cnt = (cnt + 1LL*rpairs[m][n] * lpairs[n][m])%mod;
                 }
             }
-
-            for(int i=0; i<10; i++){
-                lpair[i][j] += left[i];
-            }
-            left[j]++;
         }
-        return ans;
+        return cnt;
     }
 };
